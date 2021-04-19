@@ -31,14 +31,22 @@ def plot_contour(X_train, y_train, pipe, granularity=0.1, grid_side=0.5):
     data = pd.DataFrame({'x1':X_train[:,0], 'x2':X_train[:,1]})
     sns.scatterplot(data=data,x= 'x1', y='x2', c=y_train, cmap=cm)
     
-def gridsearch_heatmap(gridresults, param_grid, vmin = None, vmax = None, figsize=(10,10)):
+def gridsearch_heatmap(gridresults, param_grid, vmin = None, vmax = None, figsize=(12,12)):
+    """
+    plots results from a gridsearch.
+    Parameters:
+      gridresults: A GridSearchCV object
+      param_grid: a grid with two parameters
+      vmin, vmax: used to cut of colors
+      figsize: tuple, specifies plotsize
+    """
     idx, col = ['param_' + [*param_grid.keys()][i] for i in range(2)]
     pivoted = pd.pivot_table(pd.DataFrame(gridresults.cv_results_),
                             values = 'mean_test_score',
                             index = idx,
                             columns = col)
-    pivoted.index = ["{:.4f}".format(x) for x in pivoted.index]
-    pivoted.columns = ["{:.4f}".format(x) for x in pivoted.columns]
+    pivoted.index = ["{:.2f}".format(x) for x in pivoted.index]
+    pivoted.columns = ["{:.2f}".format(x) for x in pivoted.columns]
     plt.figure(figsize=figsize)
     sns.heatmap(pivoted, vmin = vmin, vmax = vmax, annot = True)
     
